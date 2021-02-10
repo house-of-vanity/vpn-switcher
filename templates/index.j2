@@ -23,11 +23,12 @@
     <h1>VPN client interfaces</h1>
     {% for if in if_status %}
     {% set button = 'Disable' if if["running"] == "true" else "Enable" %}
+    {% set emoji = '🟢' if if["running"] == "true" else "🔴" %}
     <div style="display: inline-block; width: 20%">
         <table class="tg">
         <thead>
           <tr>
-            <th class="tg-baqh">{{ if["name"] }}</th>
+            <th class="tg-baqh">{{ if["name"] }} {{ emoji }}</th>
             <th class="tg-baqh">
                 <form action="" method="post">
                     <input type="hidden" name="if_id" value="{{ if['id'] }}">
