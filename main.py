@@ -5,6 +5,19 @@ from flask import Flask, render_template, redirect, url_for, request
 app = Flask(__name__)
 connection = routeros_api.RouterOsApiPool('gateway.loc', username='vpn-switcher', password='1', plaintext_login=True)
 
+status_whitelist = [
+    'id',
+    'name',
+    'type',
+    'last-link-down-time',
+    'last-link-up-time',
+    'running',
+    'disabled',
+    'comment',
+    'Ingress',
+    'Egress'
+]
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -15,16 +28,28 @@ def index():
         if_status=if_status()
     )
 
+def is_enabled(id):
+    api = connection.get_api()
+    res = api.get_resource('/interface')
+    vpn_interface = res.get(id=id)[0]
+    return True if vpn_interface["disabled"] == "false" else False
+
 def if_status():
     api = connection.get_api()
     res = api.get_resource('/interface')
     vpn_interface = res.get(comment="bgp-vpn")
+    ret = list()
     for ifc in vpn_interface:
         ifc["Ingress"] = f"{int(ifc['rx-byte']) / 1024 / 1024 / 1024:.2f} GB"
         ifc["Egress"] = f"{int(ifc['tx-byte']) / 1024 / 1024 / 1024:.2f} GB"
-    return vpn_interface
+        new_if = {k: ifc[k] for k in status_whitelist}
+        ret.append(new_if)
+
+
+    return ret
 
 def if_switch(id):
+    cur_state = is_enabled(id)
     api = connection.get_api()
     res = api.get_resource('/interface')
     vpn_interface = res.get(id=id)[0]
@@ -32,7 +57,9 @@ def if_switch(id):
         res.set(id=vpn_interface["id"], disabled="no")
     else:
         res.set(id=vpn_interface["id"], disabled="yes")
-    time.sleep(2)
+    while cur_state == is_enabled(id):
+        print("Not ready!")
+        time.sleep(0.2)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

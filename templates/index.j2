@@ -22,8 +22,8 @@
   <body>
     <h1>VPN client interfaces</h1>
     {% for if in if_status %}
-    {% set button = 'Disable' if if["running"] == "true" else "Enable" %}
-    {% set emoji = '🟢' if if["running"] == "true" else "🔴" %}
+    {% set button = 'Disable' if if["disabled"] == "false" else "Enable" %}
+    {% set emoji = '🟢' if if["disabled"] == "false" else "🔴" %}
     <div style="display: inline-block; width: 20%">
         <table class="tg">
         <thead>
