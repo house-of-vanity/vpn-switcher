@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- load MUI -->
+    <!-- <link href="//cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script> -->
+    <style type="text/css">
+        .tg  {border-collapse:collapse;border-color:#ccc;border-spacing:0;}
+        .tg td{background-color:#fff;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+          font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:2px 2px;word-break:normal;}
+        .tg th{background-color:#f0f0f0;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+          font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+        .tg .tg-baqh{text-align:center;vertical-align:top;font-size:20px;}
+        .tg .tg-buh4{background-color:#f9f9f9;text-align:left;vertical-align:top}
+        .tg .tg-0lax{text-align:left;vertical-align:top}
+    </style>
+
+  </head>
+  <body>
+    <h1>VPN client interfaces</h1>
+    {% for if in if_status %}
+    {% set button = 'Disable' if if["running"] == "true" else "Enable" %}
+    <div style="display: inline-block; width: 20%">
+        <table class="tg">
+        <thead>
+          <tr>
+            <th class="tg-baqh">{{ if["name"] }}</th>
+            <th class="tg-baqh">
+                <form action="" method="post">
+                    <input type="hidden" name="if_id" value="{{ if['id'] }}">
+                    <input type="submit" name="button" value="{{ button }}" style="font-size:18px; background-color: #CFCFCF" />
+                </form>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for k,v in if.items() %}
+              <tr>
+                <td class="tg-buh4">{{ k }}</td>
+                <td class="tg-buh4">{{ v }}</td>
+              </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    {% endfor %}
+  </body>
+</html>
