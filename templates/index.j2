@@ -33,6 +33,7 @@
             <th class="tg-baqh">
                 <form action="" method="post">
                     <input type="hidden" name="if_id" value="{{ if['id'] }}">
+                    <input type="hidden" name="if_name" value="{{ if['name'] }}">
                     <input type="submit" name="button" value="{{ button }}" style="font-size:18px; background-color: #CFCFCF" />
                 </form>
             </th>
@@ -49,5 +50,14 @@
         </table>
     </div>
     {% endfor %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li><h3>{{ message }}</h3></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+  {% endwith %}
   </body>
 </html>

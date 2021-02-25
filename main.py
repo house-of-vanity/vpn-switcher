@@ -1,8 +1,9 @@
 import time
 import routeros_api
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 connection = routeros_api.RouterOsApiPool('gateway.loc', username='vpn-switcher', password='1', plaintext_login=True)
 
 status_whitelist = [
@@ -21,7 +22,10 @@ status_whitelist = [
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        state = 'off' if is_enabled(request.form['if_id']) else 'on'
+        flash(f"Interface {request.form['if_name']} ({request.form['if_id']}) switched {state}.")
         if_switch(request.form['if_id'])
+
     # status = if_status()
     return render_template(
         'index.j2',
