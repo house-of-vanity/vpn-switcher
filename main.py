@@ -46,7 +46,7 @@ def if_status():
     for ifc in vpn_interface:
         ifc["Ingress"] = f"{int(ifc['rx-byte']) / 1024 / 1024 / 1024:.2f} GB"
         ifc["Egress"] = f"{int(ifc['tx-byte']) / 1024 / 1024 / 1024:.2f} GB"
-        new_if = {k: ifc[k] for k in status_whitelist}
+        new_if = {k: ifc.get(k, 'N/A') for k in status_whitelist}
         ret.append(new_if)
 
 
